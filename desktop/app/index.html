@@ -39,10 +39,10 @@ h1{font-size:22px;line-height:1.2;margin:0}
 .hint{font-size:13px;color:var(--mut);margin:12px 2px 8px}
 .row{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 12px;margin-bottom:6px}
 .row .st{font-size:13px;font-weight:500;border-radius:20px;padding:2px 10px;background:var(--acs);color:var(--ac);white-space:nowrap}
-.row.u{border-color:var(--u);background:var(--us)}.row.u .st{background:var(--u);color:#fff}
+.row.p{border-color:var(--ac);background:var(--acs)}.row.u{border-color:var(--u);background:var(--us)}.row.u .st{background:var(--u);color:#fff}
 .row.e{border-color:var(--e);background:var(--es)}.row.e .st{background:var(--e);color:#fff}
 :root[data-theme="dark"] .row.u .st,:root[data-theme="dark"] .row.e .st{color:#1a1206}
-.pb{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 12px;font-size:14px;font-weight:500;min-width:84px}.pb.on.u{background:var(--u);border-color:var(--u);color:#fff}.pb.on.e{background:var(--e);border-color:var(--e);color:#fff}.acts{display:flex;gap:6px}.nm2{flex:1}.gt{width:100%;height:340px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px;font:inherit}.period{display:flex;gap:6px;margin-bottom:12px;align-items:center}.period input{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 8px;flex:1;min-width:0}.bs{display:flex;justify-content:space-between;font-weight:500;padding-top:8px}.sm{color:var(--mut);font-size:13px}h2{font-size:16px;margin:18px 0 4px}.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;justify-content:center}
+.pb{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 12px;font-size:14px;font-weight:500;min-width:84px}.pb.on.p{background:var(--ac);border-color:var(--ac);color:#06200d}.pb.on.u{background:var(--u);border-color:var(--u);color:#fff}.pb.on.e{background:var(--e);border-color:var(--e);color:#fff}.acts{display:flex;gap:6px}.nm2{flex:1}.gt{width:100%;height:340px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px;font:inherit}.period{display:flex;gap:6px;margin-bottom:12px;align-items:center}.period input{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 8px;flex:1;min-width:0}.bs{display:flex;justify-content:space-between;font-weight:500;padding-top:8px}.sm{color:var(--mut);font-size:13px}h2{font-size:16px;margin:18px 0 4px}.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;justify-content:center}
 .bar .btn{flex:1;max-width:340px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -369,10 +369,13 @@ async function pullAnswers(){
   try{
     await fbUid();const q=await FB.db.collection("groups/"+c+"/att").where("date","==",ui.date).get(),got={};
     q.forEach(d=>{const x=d.data();got[x.i]=x.slots||{}});
-    let no=0,part=0,none=0;
+    let yes=0,no=0,part=0,none=0;
     NAMES.forEach((_,i)=>{const s=got[i];if(!s){none++;return}const a=ui.slots.map(k=>s[k]);
-      if(a.every(v=>v===false)){if(!ui.marks[i])ui.marks[i]="u";no++}else if(a.some(v=>v===false))part++;else if(a.some(v=>v===undefined))none++});
-    toast("Не будут: "+no+(part?", частично: "+part:"")+", не ответили: "+none);render();
+      if(a.every(v=>v===true)){ui.marks[i]="p";yes++}
+      else if(a.every(v=>v===false)){if(!ui.marks[i])ui.marks[i]="u";no++}
+      else if(a.some(v=>v===true)&&a.some(v=>v===false))part++;
+      else none++});
+    toast("Будут: "+yes+", не будут: "+no+(part?", частично: "+part:"")+", не ответили: "+none);render();
   }catch(e){toast("Ошибка: "+(e.code||e.message))}
 }
 
