@@ -163,11 +163,11 @@ h2{letter-spacing:-.25px;color:#dff8e4;margin-top:20px}
 /* Version 9: persistent bottom navigation, including Windows desktop */
 .tabs{position:fixed;z-index:30;left:0;right:0;bottom:0;margin:0;padding:8px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom,0px));border:0;border-top:1px solid rgba(112,240,139,.22);border-radius:16px 16px 0 0;background:rgba(8,14,10,.96);backdrop-filter:blur(18px);box-shadow:0 -10px 30px rgba(0,0,0,.35);gap:5px}
 .tab{flex:1;border:0;border-radius:10px;margin:0;padding:10px 5px;font-size:12px;white-space:nowrap}
-.wrap{padding-bottom:170px}
-.bar{bottom:72px;padding-bottom:8px;background:rgba(9,15,11,.96);z-index:25}
-@media(min-width:700px){.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(760px,96vw);border:1px solid rgba(112,240,139,.22);border-bottom:0}.bar{bottom:74px}}
+.wrap{padding-bottom:230px}
+.bar{bottom:78px;padding-bottom:10px;background:rgba(9,15,11,.98);z-index:25;min-height:68px;align-items:center}
+@media(min-width:700px){.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(760px,96vw);border:1px solid rgba(112,240,139,.22);border-bottom:0;min-height:72px}.bar{bottom:78px;min-height:72px}.wrap{padding-bottom:240px}}
 .online-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}.online-status{font-size:13px;color:var(--mut)}.online-answer{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.online-answer:last-child{border:0}
-@media(max-width:480px){.tab{font-size:11px;padding:10px 2px}.wrap{padding-bottom:170px}.bar{bottom:66px}}
+@media(max-width:480px){.tab{font-size:11px;padding:10px 2px}.wrap{padding-bottom:230px}.bar{bottom:66px}}
 </style>
 </head>
 <body>
