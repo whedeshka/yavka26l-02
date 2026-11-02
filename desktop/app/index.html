@@ -208,7 +208,7 @@ function seed(){return {recs:[],uid:1,names:NAMES}}
 function load(){try{const j=localStorage.getItem(KEY);if(j){S=JSON.parse(j);if(S.names&&S.names.length)NAMES=S.names;if(S.cfg)CFG={...CFG,group:S.cfg.group||CFG.group,course:S.cfg.course||CFG.course,spec:S.cfg.spec||CFG.spec,w1:(S.cfg.w1==="2026-08-31"?"2026-09-01":(S.cfg.w1||CFG.w1))};delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg=CFG;S.recs.forEach(x=>{if(!x.date)x.date="2026-10-"+String(x.day).padStart(2,"0");if(x.status==="?")x.status="u"});return}}catch(e){}S=seed()}
 function save(){try{delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg={group:CFG.group,course:CFG.course,spec:CFG.spec,w1:CFG.w1};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
-function sums(i,ym=ui.ym){const r=S.recs.filter(x=>x.i===i&&x.status!=="p"&&(!ym||x.date.startsWith(ym)));const h=s=>r.filter(x=>x.status===s).reduce((a,x)=>a+x.hours,0);return {r:r.sort((a,b)=>a.date.localeCompare(b.date)),all:r.reduce((a,x)=>a+x.hours,0),u:h("u")+h("?"),e:h("e")}}
+function sums(i,ym=ui.ym){const allRec=S.recs.filter(x=>x.i===i&&(!ym||x.date.startsWith(ym)));const r=allRec.filter(x=>x.status!=="p");const h=s=>r.filter(x=>x.status===s).reduce((a,x)=>a+x.hours,0);const present=allRec.filter(x=>x.status==="p").reduce((a,x)=>a+x.hours,0);return {r:r.sort((a,b)=>a.date.localeCompare(b.date)),all:r.reduce((a,x)=>a+x.hours,0),present,u:h("u")+h("?"),e:h("e")}}
 const TIMES=["8:30–10:05","10:30–12:05","13:00–14:35","15:00–16:35"],DOW=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
 // "!" в начале = подчёркнуто в расписании (лекция), "|4" = номер после названия (кабинет); физкультура всегда семинар
 const SCH=[
@@ -323,12 +323,45 @@ function viewMark(){
 }
 function period(){return `<div class="period"><button class="pb" data-act="pm" style="min-width:0" aria-label="Предыдущий месяц">‹</button><input type="month" data-f="ym" value="${ui.ym}" aria-label="Месяц"><button class="pb" data-act="nm" style="min-width:0" aria-label="Следующий месяц">›</button><button class="pb ${ui.ym?"":"on e"}" data-act="allp">Весь период</button></div>`}
 function chipsOf(s){return `${s.all?`<span class="chip">${pairsWord(s.all/2)}</span>`:`<span class="chip ok">без пропусков</span>`}${s.e?`<span class="chip e">уважительно ${s.e} ч</span>`:""}${s.u?`<span class="chip u">неуважительно ${s.u} ч</span>`:""}`}
+function attendancePlannedPairs(){
+  const today=iso(new Date());
+  let start,end;
+  if(ui.ym){
+    const [y,m]=ui.ym.split("-").map(Number);
+    start=ui.ym+"-01";
+    end=iso(new Date(Date.UTC(y,m,0)));
+    if(end>today)end=today;
+  }else{
+    start=CFG.w1;
+    end=today;
+  }
+  if(start>end)return 0;
+  const a=new Date(start+"T00:00:00Z"),b=new Date(end+"T00:00:00Z");
+  let count=0;
+  for(let d=new Date(a);d<=b;d.setUTCDate(d.getUTCDate()+1)){
+    const ds=d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
+    const day=SCH[weekOf(ds)][dowOf(ds)]||[];
+    count+=day.filter(Boolean).length;
+  }
+  return count;
+}
 function viewSum(){
-  const tot={all:0,u:0,e:0};
-  NAMES.forEach((_,i)=>{const s=sums(i);tot.all+=s.all;tot.u+=s.u;tot.e+=s.e});
-  const mx=Math.max(1,...NAMES.map((_,k)=>sums(k).all));const order=NAMES.map((n,i)=>i).sort((a,b)=>sums(b).all-sums(a).all||NAMES[a].localeCompare(NAMES[b],"ru"));
-  return period()+`<div class="stats"><div class="stat"><b>${tot.all} ч</b><span>всего пропущено</span></div><div class="stat"><b>${tot.u} ч</b><span>неуважительно</span></div><div class="stat"><b>${tot.e} ч</b><span>уважительно</span></div></div><div class="hint" style="margin-top:0">Нажмите на студента, чтобы увидеть подробности.</div>`+
-  order.map(i=>{const s=sums(i);return `<section class="card"><button class="ch" data-act="open" data-i="${i}"><span class="nm">${esc(NAMES[i])}</span><span class="big">${s.all} ч</span><span aria-hidden="true">›</span></button><div class="chips">${chipsOf(s)}</div><div class="meter"><i style="width:${Math.round(s.all/mx*100)}%"></i></div></section>`}).join("");
+  const tot={all:0,u:0,e:0,present:0};
+  NAMES.forEach((_,i)=>{const s=sums(i);tot.all+=s.all;tot.u+=s.u;tot.e+=s.e;tot.present+=s.present});
+  const recordedHours=tot.present+tot.all;
+  const presentPairs=tot.present/2;
+  const attendancePct=recordedHours?Math.round(tot.present/recordedHours*100):0;
+  const order=NAMES.map((n,i)=>i).sort((a,b)=>sums(b).present-sums(a).present||NAMES[a].localeCompare(NAMES[b],"ru"));
+  return period()+`<h2 style="margin-top:8px">Посещаемость</h2><div class="stats">
+    <div class="stat"><b>${Math.round(presentPairs*10)/10}</b><span>отмечено «Был» пар</span></div>
+    <div class="stat"><b>${Math.round(tot.present*10)/10} ч</b><span>часы присутствия</span></div>
+    <div class="stat"><b>${attendancePct}%</b><span>среди отмеченных</span></div>
+  </div><div class="stats">
+    <div class="stat"><b>${tot.all} ч</b><span>пропущено</span></div>
+    <div class="stat"><b>${tot.u} ч</b><span>неуважительно</span></div>
+    <div class="stat"><b>${tot.e} ч</b><span>уважительно</span></div>
+  </div><div class="hint" style="margin-top:0">Присутствие засчитывается только студентам, у которых сохранена зелёная отметка «Был». Неотмеченные занятия не учитываются.</div>`+
+  order.map(i=>{const s=sums(i),recorded=s.present+s.all,pct=recorded?Math.round(s.present/recorded*100):0;return `<section class="card"><button class="ch" data-act="open" data-i="${i}"><span class="nm">${esc(NAMES[i])}</span><span class="big">${Math.round(s.present/2*10)/10} пар · ${Math.round(s.present*10)/10} ч</span><span aria-hidden="true">›</span></button><div class="chips"><span class="chip ok">посещаемость ${pct}%</span><span class="chip">${Math.round(s.all/2*10)/10} пар пропущено</span>${chipsOf(s)}</div><div class="meter"><i style="width:${pct}%"></i></div></section>`}).join("");
 }
 function viewDetail(){
   const i=ui.detail,s=sums(i),g={};
