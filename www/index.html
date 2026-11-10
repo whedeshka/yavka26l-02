@@ -310,14 +310,14 @@ async function share(text,title){
 }
 function viewMark(){
   const subs=[...new Set(S.recs.map(x=>x.subject).filter(Boolean))];
-  const n=Object.keys(ui.marks).length;
+  const n=Object.values(ui.marks).filter(v=>v==="u"||v==="e").length;
   return `<div class="panel"><div class="form">
     <div><label for="fd">Дата</label><input type="date" id="fd" data-f="date" value="${ui.date}"></div>
     <div><label>Вид занятия</label><div class="seg"><button data-act="type" data-v="lec" aria-pressed="${ui.type==="lec"}">Лекция</button><button data-act="type" data-v="sem" aria-pressed="${ui.type==="sem"}">Семинар</button></div></div>
     <div class="full"><label for="fs">Предмет</label><input id="fs" data-f="subject" list="subs" value="${esc(ui.subject)}" placeholder="Например: Анатомия"><datalist id="subs">${subs.map(s=>`<option value="${esc(s)}">`).join("")}</datalist></div>
     <div class="full"><label for="fp">Сколько пар пропущено (1 пара = 2 академических часа)</label><select id="fp" data-f="pairs">${[1,2,3,4].map(p=>`<option value="${p}" ${ui.pairs===p?"selected":""}>${pairsWord(p)} = ${p*2} ч</option>`).join("")}</select></div>
   </div></div>
-  ${schedHtml()}<div class="hint attendance-hint">Ручная отметка старостой: отметьте только отсутствующих — остальные считаются присутствующими. Повторное нажатие снимает отметку. Отсутствуют: ${n} <button class="pb" data-act="allHere" style="min-width:0;margin-left:8px">Сбросить</button> <button class="pb" data-act="pull" style="min-width:0;margin-left:4px">Ответы студентов</button></div>
+  ${schedHtml()}<div class="hint attendance-hint">Ручная отметка старостой: отметьте только отсутствующих — остальные считаются присутствующими. Повторное нажатие снимает отметку. Отсутствуют: ${n} <button class="pb on" data-act="allPresent" style="min-width:0;margin-left:8px">Всем был</button> <button class="pb" data-act="allHere" style="min-width:0;margin-left:4px">Сбросить</button> <button class="pb" data-act="pull" style="min-width:0;margin-left:4px">Ответы студентов</button></div>
   ${NAMES.map((nm,i)=>{const m=ui.marks[i];return `<div class="row ${m||""} ${ui.pop===i?"pop":""}"><span class="nm2">${esc(nm)}</span><span class="acts"><button class="pb ${m==="p"?"on":""}" data-act="mp" data-i="${i}" aria-pressed="${m==="p"}">Был</button><button class="pb ${m==="u"?"on u":""}" data-act="mu" data-i="${i}" aria-pressed="${m==="u"}">Неуваж.</button><button class="pb ${m==="e"?"on e":""}" data-act="me" data-i="${i}" aria-pressed="${m==="e"}">Уваж.</button></span></div>`}).join("")}
   <div class="bar"><button class="btn pri" data-act="saveMarks">Сохранить пропуски${n?" ("+n+")":""}</button></div>`;
 }
@@ -429,6 +429,7 @@ document.addEventListener("click",e=>{
     if(ui.slots.length){const q=parseSlot(dy[ui.slots[0]]);ui.type=q.sem?"sem":"lec";ui.subject=q.name;ui.pairs=Math.min(4,ui.slots.length)}loadMarks()}
   else if(a==="mark"){const m=ui.marks[i];if(!m)ui.marks[i]="u";else if(m==="u")ui.marks[i]="e";else delete ui.marks[i];syncAttendanceUI();return}
   else if(a==="mu"||a==="me"||a==="mp"){const v=a==="mu"?"u":a==="me"?"e":"p";if(ui.marks[i]===v)delete ui.marks[i];else ui.marks[i]=v;syncAttendanceUI();return}
+  else if(a==="allPresent"){ui.marks=Object.fromEntries(NAMES.map((_,k)=>[k,"p"]));syncAttendanceUI();return}
   else if(a==="allHere"){ui.marks={};syncAttendanceUI();return}
   else if(a==="saveCfg"){CFG={group:$("#cg").value.trim()||"—",course:$("#cc").value.trim(),spec:$("#cs").value.trim(),w1:$("#cw").value||CFG.w1};S.cfg=CFG;save();toast("Настройки сохранены")}
   else if(a==="saveNames"){const nn=$("#gn").value.split("\n").map(s=>s.trim()).filter(Boolean);if(!nn.length){toast("Список пуст");return}const map=NAMES.map(n=>nn.indexOf(n));const lost=S.recs.filter(x=>map[x.i]<0).length;if(lost&&!confirm("Будет удалено записей о пропусках: "+lost+". Продолжить?"))return;S.recs=S.recs.filter(x=>map[x.i]>=0).map(x=>({...x,i:map[x.i]}));NAMES=nn;S.names=nn;ui.marks={};save();toast("Список сохранён")}
