@@ -261,7 +261,7 @@ async function buildXlsx(months,idx){
     ws.getCell("A5").value="№ п/п";ws.getCell("B5").value="ФИО учащихся";ws.getCell("C5").value="Числа месяца";ws.getCell("AH5").value="Итого";ws.getCell("AI5").value="Из них по причинам";ws.getCell("AI6").value="уваж.";ws.getCell("AJ6").value="неуваж.";
     for(let d=1;d<=31;d++)ws.getCell(6,2+d).value=d;
     idx.forEach((i,k)=>{
-      const r=7+k,rc=S.recs.filter(x=>x.i===i&&x.date.startsWith(ym)),days={};
+      const r=7+k,rc=S.recs.filter(x=>x.i===i&&x.date.startsWith(ym)&&x.status!=="p"),days={};
       rc.forEach(x=>{const d=+x.date.slice(8);(days[d]=days[d]||{lec:0,sem:0,unk:0})[x.type]+=x.hours});
       ws.getCell(r,1).value=k+1;ws.getCell(r,2).value=NAMES[i];
       Object.entries(days).forEach(([d,v])=>{ws.getCell(r,2+ +d).value=(v.lec||v.sem)?v.lec+"/"+v.sem+(v.unk?"+"+v.unk:""):String(v.unk)});
@@ -278,7 +278,7 @@ async function buildXlsx(months,idx){
   });
   const dt=wb.addWorksheet("Подробно");
   dt.addRow(["ФИО","Дата","Вид занятия","Предмет","Часы","Пар","Причина"]).font={bold:true};
-  idx.forEach(i=>S.recs.filter(x=>x.i===i&&months.includes(x.date.slice(0,7))).sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>dt.addRow([NAMES[i],dstr(x.date),TYPES[x.type],x.subject||"не указан",x.hours,x.hours/2,ST[x.status]])));
+  idx.forEach(i=>S.recs.filter(x=>x.i===i&&months.includes(x.date.slice(0,7))&&x.status!=="p").sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>dt.addRow([NAMES[i],dstr(x.date),TYPES[x.type],x.subject||"не указан",x.hours,x.hours/2,ST[x.status]])));
   [34,14,16,26,8,6,22].forEach((w,k)=>dt.getColumn(k+1).width=w);
   return wb.xlsx.writeBuffer();
 }
