@@ -180,13 +180,48 @@ h2{color:#064f79!important}
 #scheduleForm .foot .btn:not(.pri){min-width:100px!important}
 @media(max-width:600px){#scheduleForm{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}#scheduleForm>label:has(input[type="checkbox"]){grid-column:1!important}#scheduleForm .foot{grid-column:1!important;flex-wrap:wrap!important}#scheduleForm .foot .btn{flex:1 1 130px!important}}
 
+
+/* Schedule editor alignment + user-selectable light/dark themes */
+.head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.theme-toggle{white-space:nowrap}
+#scheduleForm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:14px 16px;padding:14px}
+#scheduleForm>label{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--mut);font-size:13px}
+#scheduleForm>label input:not([type=checkbox]),#scheduleForm>label select{width:100%;min-width:0;height:42px}
+#scheduleForm>label.lecture-option{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;min-height:40px;padding:9px 12px;background:var(--bg);border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px}
+#scheduleForm .lecture-option input{width:18px;height:18px;margin:0;accent-color:var(--ac)}
+#scheduleForm .schedule-actions{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:0;padding-top:12px;border-top:1px solid var(--line)}
+#scheduleForm .schedule-actions .btn{min-width:140px;min-height:42px}
+@media(max-width:600px){.head-actions{gap:6px}.head-actions .btn{font-size:12px;padding:8px 10px}#scheduleForm{grid-template-columns:minmax(0,1fr);gap:12px}#scheduleForm>label.lecture-option,#scheduleForm .schedule-actions{grid-column:1}#scheduleForm .schedule-actions .btn{flex:1 1 130px}}
+/* Dark palette is explicitly selected and saved independently from user data */
+:root[data-theme="dark"]{--bg:#101820;--card:#192631;--ink:#e8f1f7;--mut:#a5b6c2;--line:#344957;--ac:#55b5e5;--acs:#203d50;--u:#ff927c;--us:#482c29;--e:#f0c16a;--es:#47391f;--q:#b4c3cc;--qs:#293b47;color-scheme:dark}
+:root[data-theme="dark"] body{background:linear-gradient(180deg,#172b38 0,#101820 260px)!important;color:var(--ink)!important}
+:root[data-theme="dark"] .top,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .card,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .online-card{background:#192631!important;border-color:#344957!important;color:#e8f1f7!important;box-shadow:0 4px 18px rgba(0,0,0,.18)!important}
+:root[data-theme="dark"] .top{border-left-color:#55b5e5!important}
+:root[data-theme="dark"] .top h1{color:#b9e7ff!important;-webkit-text-fill-color:#b9e7ff!important}
+:root[data-theme="dark"] .top .sub,:root[data-theme="dark"] .hint,:root[data-theme="dark"] .sm,:root[data-theme="dark"] .empty,:root[data-theme="dark"] .stat span{color:#a5b6c2!important}
+:root[data-theme="dark"] h2,:root[data-theme="dark"] h3{color:#b9e7ff!important}
+:root[data-theme="dark"] .btn{background:#223644!important;color:#e8f1f7!important;border-color:#405968!important}
+:root[data-theme="dark"] .btn.pri,:root[data-theme="dark"] .seg button[aria-pressed="true"]{background:#0876ad!important;color:#fff!important;border-color:#0876ad!important}
+:root[data-theme="dark"] .tabs,:root[data-theme="dark"] .bar{background:rgba(22,34,44,.98)!important;border-color:#344957!important}
+:root[data-theme="dark"] .tab{color:#a5b6c2!important}
+:root[data-theme="dark"] .tab[aria-selected="true"]{background:#203d50!important;color:#8bd4fa!important;border-color:#55b5e5!important}
+:root[data-theme="dark"] .row,:root[data-theme="dark"] .slot{background:#1c2c37!important;color:#e8f1f7!important;border-color:#405968!important}
+:root[data-theme="dark"] .row.p,:root[data-theme="dark"] .slot.on{background:#203d50!important;border-color:#55b5e5!important}
+:root[data-theme="dark"] .row .st,:root[data-theme="dark"] .chip.ok{background:#203d50!important;color:#8bd4fa!important}
+:root[data-theme="dark"] .stat b{color:#8bd4fa!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea,:root[data-theme="dark"] .form input,:root[data-theme="dark"] .form select,:root[data-theme="dark"] .period input,:root[data-theme="dark"] .rec input,:root[data-theme="dark"] .rec .mini,:root[data-theme="dark"] .gt{background:#12202a!important;color:#e8f1f7!important;border-color:#405968!important}
+:root[data-theme="dark"] #scheduleForm .lecture-option{background:#12202a!important;color:#e8f1f7!important;border-color:#405968!important}
+:root[data-theme="dark"] .meter{background:#344957!important}:root[data-theme="dark"] .meter i{background:#55b5e5!important;box-shadow:none!important}
+:root[data-theme="dark"] .toast{background:#0876ad!important;color:#fff!important}
+:root[data-theme="dark"] .ov .box{background:#192631!important;color:#e8f1f7!important;border-color:#405968!important}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
     <div><h1>Явка</h1><div class="sub" id="sub"></div></div>
-    <button class="btn pri" data-act="shareAll">Поделиться всем</button>
+    <div class="head-actions"><button class="btn theme-toggle" data-act="toggleTheme" type="button" aria-label="Переключить тему">🌙 Тёмная тема</button><button class="btn pri" data-act="shareAll">Поделиться всем</button></div>
   </div>
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" data-act="tab" data-v="today">Сегодня</button>
@@ -434,9 +469,11 @@ function viewSchedule(){
   <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">${days.map(d=>`<button class="btn ${ui.scheduleDay===d?"pri":""}" data-act="schedDay" data-v="${d}">${["","Пн","Вт","Ср","Чт","Пт","Сб"][d]}</button>`).join("")}</div>
   <section class="card"><h3 style="margin-top:0">${["","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"][ui.scheduleDay]} · ${ui.scheduleWeek===0?"Неделя 1":"Неделя 2"}</h3>
   ${day.map((v,k)=>{const p=v?parseSlot(v):null;return `<div class="slot" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 0"><div><b>${k+1} пара · ${TIMES[k]}</b><span style="display:block">${p?esc(p.name)+(p.room?" · ауд. "+esc(p.room):"")+(p.sem?" · семинар":" · лекция"):"Не заполнено"}</span></div><div style="display:flex;gap:6px"><button class="btn" data-act="editSlot" data-k="${k}">Изменить</button>${p?`<button class="btn" data-act="deleteSlot" data-k="${k}" aria-label="Удалить пару">✕</button>`:""}</div></div>`}).join("")}
-  </section><section class="card"><h3 style="margin-top:0">${editing?"Изменить пару":"Добавить пару"}</h3><form id="scheduleForm" class="form"><input type="hidden" name="slot" value="${editing?ui.editSlot:-1}"><label>Номер пары<select name="period">${TIMES.map((t,k)=>`<option value="${k}" ${(editing?ui.editSlot:0)===k?"selected":""}>${k+1} · ${t}</option>`).join("")}</select></label><label>Предмет<input name="subject" required maxlength="100" placeholder="Например, Анатомия" value="${esc(parsed.name)}"></label><label>Аудитория<input name="room" maxlength="30" placeholder="Например, 305" value="${esc(parsed.room)}"></label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="lecture" ${!parsed.sem&&slot?"checked":""}> Лекция</label><div class="foot" style="grid-column:1/-1"><button class="btn pri" type="submit">Сохранить пару</button><button class="btn" type="button" data-act="cancelEdit">Отмена</button></div></form></section>`;
+  </section><section class="card"><h3 style="margin-top:0">${editing?"Изменить пару":"Добавить пару"}</h3><form id="scheduleForm" class="form"><input type="hidden" name="slot" value="${editing?ui.editSlot:-1}"><label>Номер пары<select name="period">${TIMES.map((t,k)=>`<option value="${k}" ${(editing?ui.editSlot:0)===k?"selected":""}>${k+1} · ${t}</option>`).join("")}</select></label><label>Предмет<input name="subject" required maxlength="100" placeholder="Например, Анатомия" value="${esc(parsed.name)}"></label><label>Аудитория<input name="room" maxlength="30" placeholder="Например, 305" value="${esc(parsed.room)}"></label><label class="lecture-option"><input type="checkbox" name="lecture" ${!parsed.sem&&slot?"checked":""}><span>Лекция</span></label><div class="foot schedule-actions" style="grid-column:1/-1"><button class="btn pri" type="submit">Сохранить пару</button><button class="btn" type="button" data-act="cancelEdit">Отмена</button></div></form></section>`;
 }
+function applyTheme(){const dark=localStorage.getItem("yavka-theme")==="dark";document.documentElement.dataset.theme=dark?"dark":"light";const b=document.querySelector("[data-act=\"toggleTheme\"]");if(b){b.textContent=dark?"☀️ Светлая тема":"🌙 Тёмная тема";b.setAttribute("aria-pressed",String(dark))}}
 function render(){
+  applyTheme();
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===ui.tab));
   const y=window.scrollY;$("#app").innerHTML=ui.tab==="today"?viewToday():ui.tab==="mark"?viewMark():ui.tab==="grp"?viewGrp():ui.tab==="schedule"?viewSchedule():ui.detail!=null?viewDetail():viewSum();
   window.scrollTo({top:y,behavior:"instant"});fx();
@@ -446,6 +483,7 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   const a=b.dataset.act,i=+b.dataset.i,id=+b.dataset.id,r=S.recs.find(x=>x.id===id);
   if(["tab","open","back","pm","nm","allp"].includes(a))animate=true;if(a==="mu"||a==="me")ui.pop=i;
+  if(a==="toggleTheme"){localStorage.setItem("yavka-theme",localStorage.getItem("yavka-theme")==="dark"?"light":"dark");applyTheme();return}
   if(a==="tab"){ui.tab=b.dataset.v;ui.detail=null;if(ui.tab==="today")ui.date=iso(new Date());if(ui.tab==="mark")loadMarks()}
   else if(a==="schedWeek"){ui.scheduleWeek=+b.dataset.v;ui.editSlot=-1;render();return}
   else if(a==="schedDay"){ui.scheduleDay=+b.dataset.v;ui.editSlot=-1;render();return}
