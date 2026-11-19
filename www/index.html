@@ -169,12 +169,50 @@ h2{letter-spacing:-.25px;color:#dff8e4;margin-top:20px}
 .online-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}.online-status{font-size:13px;color:var(--mut)}.online-answer{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.online-answer:last-child{border:0}
 @media(max-width:480px){.tab{font-size:11px;padding:10px 2px}.wrap{padding-bottom:230px}.bar{bottom:66px}}
 @media(max-width:600px){#scheduleForm{grid-template-columns:1fr!important}#scheduleForm .foot{display:flex;flex-wrap:wrap}#scheduleForm input,#scheduleForm select{width:100%;min-width:0}.slot{min-width:0}}
+
+/* ОрГМУ-inspired university interface: clean blue, paper-white surfaces */
+:root{--bg:#f2f6f9;--card:#ffffff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}
+:root[data-theme="dark"]{--bg:#f2f6f9;--card:#fff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#f2f6f9;--card:#fff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}}
+body{background:linear-gradient(180deg,#eaf3f8 0,#f5f8fa 230px,var(--bg) 230px);font-family:Arial,system-ui,sans-serif}
+.wrap{max-width:1040px;padding:22px 22px 110px}
+.top{align-items:center;background:#fff;border:1px solid #d8e3eb;border-left:5px solid #00659b;border-radius:14px;padding:17px 20px;box-shadow:0 5px 20px rgba(20,60,85,.06)}
+.top h1{font-size:25px;color:#064f79;letter-spacing:-.4px}
+.top .sub{color:#637b8b}
+.top:before{content:"ОРЕНБУРГСКИЙ ГОСУДАРСТВЕННЫЙ МЕДИЦИНСКИЙ УНИВЕРСИТЕТ";display:block;position:absolute;top:14px;left:max(calc((100vw - 1040px)/2 + 28px),30px);font-size:9px;letter-spacing:1.05px;font-weight:700;color:#66869b}
+.top{position:relative;padding-top:27px}
+.btn{border-radius:8px;border-color:#d5e1e9;transition:background .15s,border-color .15s}
+.btn.pri,.seg button[aria-pressed="true"]{background:#00659b;border-color:#00659b;color:#fff}
+.tab[aria-selected="true"]{color:#00659b;border-bottom-color:#00659b}
+.panel,.card,.stat,.online-card{border-radius:12px;box-shadow:0 3px 14px rgba(28,67,91,.045)}
+.row{border-radius:9px}
+.row.p{background:#e3f1f9;border-color:#72afd0}
+.slot{background:#fff!important;border:1px solid #d8e3eb!important;color:#183247!important;border-radius:10px!important;box-shadow:none!important}
+.slot:hover,.slot.on{border-color:#00659b!important;background:#e3f1f9!important}
+.slot.on span{color:#00659b!important}
+.chip.ok{background:#e3f1f9;color:#00659b}
+.bar{background:rgba(255,255,255,.97);border-top:1px solid #d8e3eb;box-shadow:0 -5px 22px rgba(28,67,91,.08)}
+.tabs{background:rgba(255,255,255,.97);border-top:1px solid #d8e3eb;box-shadow:0 -5px 22px rgba(28,67,91,.08)}
+.tab[aria-selected="true"]{background:#eaf4fa}
+h2{color:#064f79}
+.hint{color:#637b8b}
+.sm,.empty{color:#637b8b}
+.meter{background:#e3ebf0}
+.meter i{background:#00659b;box-shadow:none}
+.toast{background:#064f79;color:white}
+.ov .box{background:#fff;border:1px solid #d8e3eb;box-shadow:0 18px 60px rgba(20,50,70,.2)}
+.rec{border-bottom-color:#e3ebf0}
+.rec .mini{background:#f5f8fa}
+.btn.pri:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 5px #00659b}
+@media(min-width:700px){.tabs{position:static;transform:none;width:100%;margin:14px 0 18px;border:1px solid #d8e3eb;border-radius:10px;min-height:0;box-shadow:none;backdrop-filter:none;justify-content:flex-start;padding:5px;gap:4px}.tab{flex:0 0 auto;padding:10px 17px;font-size:14px}.wrap{padding-bottom:60px}.bar{position:static;margin-top:16px;border:1px solid #d8e3eb;border-radius:12px;box-shadow:none;min-height:0}.top:before{left:48px}}
+@media(max-width:699px){.wrap{padding:12px 12px 110px}.top{padding:25px 12px 12px;gap:8px}.top:before{left:14px;top:10px;font-size:7px;letter-spacing:.65px}.top h1{font-size:21px}.top .btn{font-size:11px;padding:8px}.tabs{overflow-x:auto;justify-content:flex-start;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{flex:0 0 auto;min-width:max-content;padding:10px 12px;font-size:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.form{grid-template-columns:1fr}.form .full{grid-column:1}.row{gap:7px;padding:9px}.pb{min-width:72px;padding:7px 8px;font-size:12px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <div><h1>Учёт явки</h1><div class="sub" id="sub"></div></div>
+    <div><h1>Явка</h1><div class="sub" id="sub"></div></div>
     <button class="btn pri" data-act="shareAll">Поделиться всем</button>
   </div>
   <div class="tabs" role="tablist">
