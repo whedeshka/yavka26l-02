@@ -168,6 +168,7 @@ h2{letter-spacing:-.25px;color:#dff8e4;margin-top:20px}
 @media(min-width:700px){.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(760px,96vw);border:1px solid rgba(112,240,139,.22);border-bottom:0;min-height:72px}.bar{bottom:78px;min-height:72px}.wrap{padding-bottom:240px}}
 .online-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}.online-status{font-size:13px;color:var(--mut)}.online-answer{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}.online-answer:last-child{border:0}
 @media(max-width:480px){.tab{font-size:11px;padding:10px 2px}.wrap{padding-bottom:230px}.bar{bottom:66px}}
+@media(max-width:600px){#scheduleForm{grid-template-columns:1fr!important}#scheduleForm .foot{display:flex;flex-wrap:wrap}#scheduleForm input,#scheduleForm select{width:100%;min-width:0}.slot{min-width:0}}
 </style>
 </head>
 <body>
@@ -181,6 +182,7 @@ h2{letter-spacing:-.25px;color:#dff8e4;margin-top:20px}
     <button class="tab" role="tab" data-act="tab" data-v="mark">Отметить пару</button>
     <button class="tab" role="tab" data-act="tab" data-v="sum">Сводки</button>
     <button class="tab" role="tab" data-act="tab" data-v="grp">Группа</button>
+    <button class="tab" role="tab" data-act="tab" data-v="schedule">Расписание</button>
   </div>
   <div id="app"></div>
 </div>
@@ -199,19 +201,19 @@ const TYPES={lec:"лекция",sem:"семинар",unk:"тип не указа
 const ST={u:"неуважительно",e:"уважительно"};
 let S={recs:[],uid:1};
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-const ui={tab:"mark",date:iso(new Date()),ym:iso(new Date()).slice(0,7),detail:null,slots:[],min:15,type:"lec",subject:"",pairs:1,marks:{},open:{}};
+const ui={tab:"mark",scheduleDay:1,scheduleWeek:0,editSlot:-1,date:iso(new Date()),ym:iso(new Date()).slice(0,7),detail:null,slots:[],min:15,type:"lec",subject:"",pairs:1,marks:{},open:{}};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const dstr=d=>new Date(d+"T00:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"short",year:"numeric"}).replace(" г.","");
 const periodLabel=()=>ui.ym?new Date(ui.ym+"-01T00:00:00").toLocaleDateString("ru-RU",{month:"long",year:"numeric"}):"весь период";
 function seed(){return {recs:[],uid:1,names:NAMES}}
-function load(){try{const j=localStorage.getItem(KEY);if(j){S=JSON.parse(j);if(S.names&&S.names.length)NAMES=S.names;if(S.cfg)CFG={...CFG,group:S.cfg.group||CFG.group,course:S.cfg.course||CFG.course,spec:S.cfg.spec||CFG.spec,w1:(S.cfg.w1==="2026-08-31"?"2026-09-01":(S.cfg.w1||CFG.w1))};delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg=CFG;S.recs.forEach(x=>{if(!x.date)x.date="2026-10-"+String(x.day).padStart(2,"0");if(x.status==="?")x.status="u"});return}}catch(e){}S=seed()}
-function save(){try{delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg={group:CFG.group,course:CFG.course,spec:CFG.spec,w1:CFG.w1};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const j=localStorage.getItem(KEY);if(j){S=JSON.parse(j);if(Array.isArray(S.schedule)&&S.schedule.length===2)SCH=S.schedule;if(S.names&&S.names.length)NAMES=S.names;if(S.cfg)CFG={...CFG,group:S.cfg.group||CFG.group,course:S.cfg.course||CFG.course,spec:S.cfg.spec||CFG.spec,w1:(S.cfg.w1==="2026-08-31"?"2026-09-01":(S.cfg.w1||CFG.w1))};delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg=CFG;S.recs.forEach(x=>{if(!x.date)x.date="2026-10-"+String(x.day).padStart(2,"0");if(x.status==="?")x.status="u"});return}}catch(e){}S=seed()}
+function save(){try{S.schedule=SCH;delete S.homework;delete S.journal;delete S.sess;delete S.daySess;S.cfg={group:CFG.group,course:CFG.course,spec:CFG.spec,w1:CFG.w1};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 function sums(i,ym=ui.ym){const allRec=S.recs.filter(x=>x.i===i&&(!ym||x.date.startsWith(ym)));const r=allRec.filter(x=>x.status!=="p");const h=s=>r.filter(x=>x.status===s).reduce((a,x)=>a+x.hours,0);const present=allRec.filter(x=>x.status==="p").reduce((a,x)=>a+x.hours,0);return {r:r.sort((a,b)=>a.date.localeCompare(b.date)),all:r.reduce((a,x)=>a+x.hours,0),present,u:h("u")+h("?"),e:h("e")}}
 const TIMES=["8:30–10:05","10:30–12:05","13:00–14:35","15:00–16:35"],DOW=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
 // "!" в начале = подчёркнуто в расписании (лекция), "|4" = номер после названия (кабинет); физкультура всегда семинар
-const SCH=[
+let SCH=[
 {1:["Физкультура","!Анатомия|2С","История России","Философия"],2:["Основы искусственного интеллекта","Основы искусственного интеллекта","Нормальная физиология","Нормальная физиология"],3:["","!Молекулярная биология|4","Латинский язык",""],4:["!Уход за больными|4","!Биология|5","Анатомия","Анатомия"],5:["!История России|4","!Основы Российской государственности|4","Биология","Биология"],6:["Молекулярная биология","Молекулярная биология","Основы Российской государственности",""]},
 {1:["Физкультура","История России","Основы Российской государственности",""],2:["","Философия","Латинский язык",""],3:["Молекулярная биология","Молекулярная биология","!Молекулярная биология|5","!Основы Российской государственности|4"],4:["Основы Российской государственности","Философия","Анатомия","Анатомия"],5:["!Нормальная физиология|6","!Основы искусственного интеллекта|4","Уход за больными","Уход за больными"],6:["","!Философия|4","",""]}];
 function parseSlot(s){const lecture=s[0]==="!",[name,room]=s.replace(/^!/,"").split("|");return {name,room,sem:!lecture}}
@@ -412,16 +414,33 @@ async function pullAnswers(){
   }catch(e){toast("Ошибка: "+(e.code||e.message))}
 }
 
+function viewSchedule(){
+  const days=[1,2,3,4,5,6],day=SCH[ui.scheduleWeek][ui.scheduleDay]||[];
+  const editing=ui.editSlot>=0,slot=editing?day[ui.editSlot]||"":"";
+  const parsed=slot?parseSlot(slot):{name:"",room:"",sem:true};
+  return `<h2 style="margin:8px 0">Расписание</h2><div class="hint">Изменяй пары на устройстве — изменения сохраняются автоматически и используются в разделе отметки посещаемости.</div>
+  <div class="chips" style="display:flex;gap:7px;flex-wrap:wrap;margin:12px 0"><button class="btn ${ui.scheduleWeek===0?"pri":""}" data-act="schedWeek" data-v="0">Неделя 1</button><button class="btn ${ui.scheduleWeek===1?"pri":""}" data-act="schedWeek" data-v="1">Неделя 2</button></div>
+  <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">${days.map(d=>`<button class="btn ${ui.scheduleDay===d?"pri":""}" data-act="schedDay" data-v="${d}">${["","Пн","Вт","Ср","Чт","Пт","Сб"][d]}</button>`).join("")}</div>
+  <section class="card"><h3 style="margin-top:0">${["","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"][ui.scheduleDay]} · ${ui.scheduleWeek===0?"Неделя 1":"Неделя 2"}</h3>
+  ${day.map((v,k)=>{const p=v?parseSlot(v):null;return `<div class="slot" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 0"><div><b>${k+1} пара · ${TIMES[k]}</b><span style="display:block">${p?esc(p.name)+(p.room?" · ауд. "+esc(p.room):"")+(p.sem?" · семинар":" · лекция"):"Не заполнено"}</span></div><div style="display:flex;gap:6px"><button class="btn" data-act="editSlot" data-k="${k}">Изменить</button>${p?`<button class="btn" data-act="deleteSlot" data-k="${k}" aria-label="Удалить пару">✕</button>`:""}</div></div>`}).join("")}
+  </section><section class="card"><h3 style="margin-top:0">${editing?"Изменить пару":"Добавить пару"}</h3><form id="scheduleForm" class="form"><input type="hidden" name="slot" value="${editing?ui.editSlot:-1}"><label>Номер пары<select name="period">${TIMES.map((t,k)=>`<option value="${k}" ${(editing?ui.editSlot:0)===k?"selected":""}>${k+1} · ${t}</option>`).join("")}</select></label><label>Предмет<input name="subject" required maxlength="100" placeholder="Например, Анатомия" value="${esc(parsed.name)}"></label><label>Аудитория<input name="room" maxlength="30" placeholder="Например, 305" value="${esc(parsed.room)}"></label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="lecture" ${!parsed.sem&&slot?"checked":""}> Лекция</label><div class="foot" style="grid-column:1/-1"><button class="btn pri" type="submit">Сохранить пару</button><button class="btn" type="button" data-act="cancelEdit">Отмена</button></div></form></section>`;
+}
 function render(){
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===ui.tab));
-  const y=window.scrollY;$("#app").innerHTML=ui.tab==="today"?viewToday():ui.tab==="mark"?viewMark():ui.tab==="grp"?viewGrp():ui.detail!=null?viewDetail():viewSum();
+  const y=window.scrollY;$("#app").innerHTML=ui.tab==="today"?viewToday():ui.tab==="mark"?viewMark():ui.tab==="grp"?viewGrp():ui.tab==="schedule"?viewSchedule():ui.detail!=null?viewDetail():viewSum();
   window.scrollTo({top:y,behavior:"instant"});fx();
 }
+document.addEventListener("submit",e=>{if(e.target.id!=="scheduleForm")return;e.preventDefault();const fd=new FormData(e.target),k=+fd.get("period"),name=String(fd.get("subject")||"").trim(),room=String(fd.get("room")||"").trim();if(!name){toast("Укажи предмет");return}SCH[ui.scheduleWeek][ui.scheduleDay][k]=(fd.get("lecture")?"!":"")+name+(room?"|"+room:"");ui.editSlot=-1;save();toast("Расписание сохранено на устройстве");render()});
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   const a=b.dataset.act,i=+b.dataset.i,id=+b.dataset.id,r=S.recs.find(x=>x.id===id);
   if(["tab","open","back","pm","nm","allp"].includes(a))animate=true;if(a==="mu"||a==="me")ui.pop=i;
   if(a==="tab"){ui.tab=b.dataset.v;ui.detail=null;if(ui.tab==="today")ui.date=iso(new Date());if(ui.tab==="mark")loadMarks()}
+  else if(a==="schedWeek"){ui.scheduleWeek=+b.dataset.v;ui.editSlot=-1;render();return}
+  else if(a==="schedDay"){ui.scheduleDay=+b.dataset.v;ui.editSlot=-1;render();return}
+  else if(a==="editSlot"){ui.editSlot=+b.dataset.k;render();return}
+  else if(a==="cancelEdit"){ui.editSlot=-1;render();return}
+  else if(a==="deleteSlot"){if(confirm("Удалить эту пару из расписания?")){SCH[ui.scheduleWeek][ui.scheduleDay][+b.dataset.k]="";save();toast("Пара удалена");render()}return}
   else if(a==="todaySlot"){ui.date=iso(new Date());const k=+b.dataset.k,p=parseSlot((SCH[weekOf(ui.date)][dowOf(ui.date)]||[])[k]);ui.slots=[k];ui.subject=p.name;ui.type=p.sem?"sem":"lec";ui.pairs=1;ui.tab="mark";loadMarks()}
   else if(a==="type"){ui.type=b.dataset.v;ui.slots=[];loadMarks()}
   else if(a==="slot"){const k=+b.dataset.k,dy=dayOf(),p=parseSlot(dy[k]),f=ui.slots.length?parseSlot(dy[ui.slots[0]]):null;
@@ -470,7 +489,7 @@ document.addEventListener("change",e=>{
   else if(f==="ym"){ui.ym=e.target.value;animate=false;render()}
 });
 
-load();save();loadMarks();render();
+load();SCH.forEach(w=>{for(let d=0;d<=6;d++){if(!Array.isArray(w[d]))w[d]=["","","",""];while(w[d].length<4)w[d].push("")}});save();loadMarks();render();
 
 </script>
 </body>
