@@ -168,6 +168,18 @@ h2{color:#064f79!important}
 .toast{background:#064f79!important;color:#fff!important}
 .ov .box{background:#fff!important;color:#183247!important;border-color:#d8e3eb!important}
 
+
+/* Schedule editor: align checkbox and action buttons consistently */
+#scheduleForm{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:end!important;gap:14px 12px!important}
+#scheduleForm>label{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-end!important;gap:5px!important;min-width:0!important;color:#637b8b!important;font-size:13px!important}
+#scheduleForm>label:has(input[type="checkbox"]){grid-column:1/-1!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;padding:4px 0!important;color:#183247!important}
+#scheduleForm>label input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px!important;margin:0!important;accent-color:#00659b}
+#scheduleForm>label input:not([type="checkbox"]),#scheduleForm>label select{width:100%!important;min-width:0!important;min-height:42px!important;box-sizing:border-box!important}
+#scheduleForm .foot{grid-column:1/-1!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;margin-top:2px!important;padding-top:12px!important;border-top:1px solid #e3ebf0!important}
+#scheduleForm .foot .btn{min-height:42px!important;min-width:132px!important;padding:10px 18px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:1.2!important}
+#scheduleForm .foot .btn:not(.pri){min-width:100px!important}
+@media(max-width:600px){#scheduleForm{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}#scheduleForm>label:has(input[type="checkbox"]){grid-column:1!important}#scheduleForm .foot{grid-column:1!important;flex-wrap:wrap!important}#scheduleForm .foot .btn{flex:1 1 130px!important}}
+
 </style>
 </head>
 <body>
