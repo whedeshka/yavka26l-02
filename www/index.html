@@ -90,7 +90,6 @@ h1{font-size:22px;line-height:1.2;margin:0}
 @media (min-width:900px){.wrap{max-width:900px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-/* Version 9: persistent bottom navigation, including Windows desktop */
 .tabs{position:fixed;z-index:30;left:0;right:0;bottom:0;margin:0;padding:8px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom,0px));border:0;border-top:1px solid rgba(112,240,139,.22);border-radius:16px 16px 0 0;background:rgba(8,14,10,.96);backdrop-filter:blur(18px);box-shadow:0 -10px 30px rgba(0,0,0,.35);gap:5px}
 .tab{flex:1;border:0;border-radius:10px;margin:0;padding:10px 5px;font-size:12px;white-space:nowrap}
 .wrap{padding-bottom:230px}
@@ -100,7 +99,6 @@ h1{font-size:22px;line-height:1.2;margin:0}
 @media(max-width:480px){.tab{font-size:11px;padding:10px 2px}.wrap{padding-bottom:230px}.bar{bottom:66px}}
 @media(max-width:600px){#scheduleForm{grid-template-columns:1fr!important}#scheduleForm .foot{display:flex;flex-wrap:wrap}#scheduleForm input,#scheduleForm select{width:100%;min-width:0}.slot{min-width:0}}
 
-/* ОрГМУ-inspired university interface: clean blue, paper-white surfaces */
 :root{--bg:#f2f6f9;--card:#ffffff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}
 :root[data-theme="dark"]{--bg:#f2f6f9;--card:#fff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#f2f6f9;--card:#fff;--ink:#183247;--mut:#637b8b;--line:#d8e3eb;--ac:#00659b;--acs:#e3f1f9;--u:#b83904;--us:#fff0e8;--e:#9b6a2b;--es:#fbf1e5;--q:#637b8b;--qs:#edf2f5;color-scheme:light}}
@@ -138,7 +136,6 @@ h2{color:#064f79}
 @media(max-width:699px){.wrap{padding:12px 12px 110px}.top{padding:25px 12px 12px;gap:8px}.top:before{left:14px;top:10px;font-size:7px;letter-spacing:.65px}.top h1{font-size:21px}.top .btn{font-size:11px;padding:8px}.tabs{overflow-x:auto;justify-content:flex-start;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{flex:0 0 auto;min-width:max-content;padding:10px 12px;font-size:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.form{grid-template-columns:1fr}.form .full{grid-column:1}.row{gap:7px;padding:9px}.pb{min-width:72px;padding:7px 8px;font-size:12px}}
 
 
-/* Final light university palette — override legacy dark theme rules */
 :root,:root[data-theme="light"],:root[data-theme="dark"],:root:not([data-theme="light"]){
  --bg:#f2f6f9!important;--card:#fff!important;--ink:#183247!important;--mut:#637b8b!important;
  --line:#d8e3eb!important;--ac:#00659b!important;--acs:#e3f1f9!important;
@@ -169,7 +166,6 @@ h2{color:#064f79!important}
 .ov .box{background:#fff!important;color:#183247!important;border-color:#d8e3eb!important}
 
 
-/* Schedule editor: align checkbox and action buttons consistently */
 #scheduleForm{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:end!important;gap:14px 12px!important}
 #scheduleForm>label{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-end!important;gap:5px!important;min-width:0!important;color:#637b8b!important;font-size:13px!important}
 #scheduleForm>label:has(input[type="checkbox"]){grid-column:1/-1!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;padding:4px 0!important;color:#183247!important}
@@ -181,7 +177,6 @@ h2{color:#064f79!important}
 @media(max-width:600px){#scheduleForm{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}#scheduleForm>label:has(input[type="checkbox"]){grid-column:1!important}#scheduleForm .foot{grid-column:1!important;flex-wrap:wrap!important}#scheduleForm .foot .btn{flex:1 1 130px!important}}
 
 
-/* Schedule editor alignment + user-selectable light/dark themes */
 .head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .theme-toggle{white-space:nowrap}
 #scheduleForm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:14px 16px;padding:14px}
@@ -192,7 +187,6 @@ h2{color:#064f79!important}
 #scheduleForm .schedule-actions{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:0;padding-top:12px;border-top:1px solid var(--line)}
 #scheduleForm .schedule-actions .btn{min-width:140px;min-height:42px}
 @media(max-width:600px){.head-actions{gap:6px}.head-actions .btn{font-size:12px;padding:8px 10px}#scheduleForm{grid-template-columns:minmax(0,1fr);gap:12px}#scheduleForm>label.lecture-option,#scheduleForm .schedule-actions{grid-column:1}#scheduleForm .schedule-actions .btn{flex:1 1 130px}}
-/* Dark palette is explicitly selected and saved independently from user data */
 :root[data-theme="dark"]{--bg:#101820;--card:#192631;--ink:#e8f1f7;--mut:#a5b6c2;--line:#344957;--ac:#55b5e5;--acs:#203d50;--u:#ff927c;--us:#482c29;--e:#f0c16a;--es:#47391f;--q:#b4c3cc;--qs:#293b47;color-scheme:dark}
 :root[data-theme="dark"] body{background:linear-gradient(180deg,#172b38 0,#101820 260px)!important;color:var(--ink)!important}
 :root[data-theme="dark"] .top,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .card,:root[data-theme="dark"] .stat,:root[data-theme="dark"] .online-card{background:#192631!important;border-color:#344957!important;color:#e8f1f7!important;box-shadow:0 4px 18px rgba(0,0,0,.18)!important}
@@ -216,7 +210,6 @@ h2{color:#064f79!important}
 :root[data-theme="dark"] .ov .box{background:#192631!important;color:#e8f1f7!important;border-color:#405968!important}
 
 
-/* Dark theme: high-contrast readable attendance controls */
 :root[data-theme="dark"] .pb,
 :root[data-theme="dark"] .pb.on:not(.u):not(.e),
 :root[data-theme="dark"] .acts .btn,
@@ -286,7 +279,6 @@ function save(){try{S.schedule=SCH;delete S.homework;delete S.journal;delete S.s
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 function sums(i,ym=ui.ym){const allRec=S.recs.filter(x=>x.i===i&&(!ym||x.date.startsWith(ym)));const r=allRec.filter(x=>x.status!=="p");const h=s=>r.filter(x=>x.status===s).reduce((a,x)=>a+x.hours,0);const present=allRec.filter(x=>x.status==="p").reduce((a,x)=>a+x.hours,0);return {r:r.sort((a,b)=>a.date.localeCompare(b.date)),all:r.reduce((a,x)=>a+x.hours,0),present,u:h("u")+h("?"),e:h("e")}}
 const TIMES=["8:30–10:05","10:30–12:05","13:00–14:35","15:00–16:35"],DOW=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
-// "!" в начале = подчёркнуто в расписании (лекция), "|4" = номер после названия (кабинет); физкультура всегда семинар
 let SCH=[
 {1:["Физкультура","!Анатомия|2С","История России","Философия"],2:["Основы искусственного интеллекта","Основы искусственного интеллекта","Нормальная физиология","Нормальная физиология"],3:["","!Молекулярная биология|4","Латинский язык",""],4:["!Уход за больными|4","!Биология|5","Анатомия","Анатомия"],5:["!История России|4","!Основы Российской государственности|4","Биология","Биология"],6:["Молекулярная биология","Молекулярная биология","Основы Российской государственности",""]},
 {1:["Физкультура","История России","Основы Российской государственности",""],2:["","Философия","Латинский язык",""],3:["Молекулярная биология","Молекулярная биология","!Молекулярная биология|5","!Основы Российской государственности|4"],4:["Основы Российской государственности","Философия","Анатомия","Анатомия"],5:["!Нормальная физиология|6","!Основы искусственного интеллекта|4","Уход за больными","Уход за больными"],6:["","!Философия|4","",""]}];
@@ -571,3 +563,4 @@ load();SCH.forEach(w=>{for(let d=0;d<=6;d++){if(!Array.isArray(w[d]))w[d]=["",""
 </script>
 </body>
 </html>
+
